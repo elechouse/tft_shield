@@ -14,12 +14,25 @@ TFTLCD::TFTLCD()
 	for(int p=2; p<7; p++) {
 		pinMode(p,OUTPUT);
 	}
+#elif defined ELECHOUSE_DUE_TFT_SHIELD_V1
+	for(int p=34; p<42; p++) {
+		pinMode(p,OUTPUT);
+	}
+	for(int p=44; p<52; p++) {
+		pinMode(p,OUTPUT);
+	}
+	
+	pinMode(23,OUTPUT);
+	pinMode(24,OUTPUT);
+	pinMode(22,OUTPUT);
+	pinMode(31,OUTPUT);
+	pinMode(33,OUTPUT);
+	
 #else
 #error "initial io here"
 #endif
 	DB_WR_EN();
-
-
+	RD_IDLE;
 }
 
 void TFTLCD::begin()

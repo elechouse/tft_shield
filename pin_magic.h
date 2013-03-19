@@ -89,7 +89,47 @@
 									DB12_WR_EN=1, DB13_WR_EN=1, DB14_WR_EN=1,DB15_WR_EN=1;}
 		
 	#elif defined ELECHOUSE_DUE_TFT_SHIELD_V1
+		#define RD_ACTIVE  PIOA->PIO_CODR = PIO_PA15	//24	PA15 
+		#define RD_IDLE    PIOA->PIO_SODR = PIO_PA15
+		#define WR_ACTIVE  PIOA->PIO_CODR = PIO_PA14	//23	PA14
+		#define WR_IDLE    PIOA->PIO_SODR = PIO_PA14
+		#define CD_COMMAND PIOB->PIO_CODR = PIO_PB26	//22	PB26
+		#define CD_DATA    PIOB->PIO_SODR = PIO_PB26
+		#define CS_ACTIVE  PIOA->PIO_CODR = PIO_PA7		//31	PA7
+		#define CS_IDLE    PIOA->PIO_SODR = PIO_PA7
+		#define RST_ACTIVE	PIOC->PIO_CODR = PIO_PC1	//33	PC1
+		#define RST_IDLE	PIOC->PIO_SODR = PIO_PC1
 		
+		#define WR_STROBE { WR_ACTIVE; WR_IDLE; }
+		#define RD_STROBE { RD_ACTIVE, RD_IDLE;}
+		
+		#define write16(a)	{ PIOC->PIO_ODSR = (PIOC->PIO_ODSR&(~0x000003FC)) | (((uint32_t)(a&0x00FF))<<2);\
+							  PIOC->PIO_ODSR = (PIOC->PIO_ODSR&(~0x000FF000)) | (((uint32_t)(a&0xFF00))<<4);\
+							  WR_STROBE;}
+		
+		/** 0x400E0EA0 (PIOA), 0x400E10A0 (PIOB), 
+			0x400E12A0 (PIOC), 0x400E14A0 (PIOD), 
+			0x400E16A0 (PIOE), 0x400E18A0 (PIOF) */
+		#define DB0_WR_EN	BB(0x400E12A0, 2)		//PC2	34
+		#define DB1_WR_EN	BB(0x400E12A0, 3)		//PC3	35
+		#define DB2_WR_EN	BB(0x400E12A0, 4)		//PC4	36
+		#define DB3_WR_EN	BB(0x400E12A0, 5)		//PC5	37
+		#define DB4_WR_EN	BB(0x400E12A0, 6)		//PC6	38
+		#define DB5_WR_EN	BB(0x400E12A0, 7)		//PC7	39
+		#define DB6_WR_EN	BB(0x400E12A0, 8)		//PC8	40
+		#define DB7_WR_EN	BB(0x400E12A0, 9)		//PC9	41
+		#define DB8_WR_EN	BB(0x400E12A0, 12)		//PC12	51
+		#define DB9_WR_EN	BB(0x400E12A0, 13)		//PC13	50
+		#define DB10_WR_EN	BB(0x400E12A0, 14)		//PC14	49
+		#define DB11_WR_EN	BB(0x400E12A0, 15)		//PC15	48
+		#define DB12_WR_EN	BB(0x400E12A0, 16)		//PC16	47
+		#define DB13_WR_EN	BB(0x400E12A0, 17)		//PC17	46
+		#define DB14_WR_EN	BB(0x400E12A0, 18)		//PC18	45
+		#define DB15_WR_EN	BB(0x400E12A0, 19)		//PC19	44
+		#define DB_WR_EN()			{DB0_WR_EN=1, DB1_WR_EN=1, DB2_WR_EN=1,DB3_WR_EN=1,\
+									DB4_WR_EN=1, DB5_WR_EN=1, DB6_WR_EN=1,DB7_WR_EN=1,\
+									DB8_WR_EN=1, DB9_WR_EN=1, DB10_WR_EN=1,DB11_WR_EN=1,\
+									DB12_WR_EN=1, DB13_WR_EN=1, DB14_WR_EN=1,DB15_WR_EN=1;}
 	#else
 		#error "Unknown TFT Shield type."
 	#endif

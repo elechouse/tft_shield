@@ -11,7 +11,7 @@
 #include <Adafruit_GFX.h>
 
 #define ELECFREAKS_TFT_SHIELD_V2
-
+//#define ELECHOUSE_DUE_TFT_SHIELD_V1
 #include "pin_magic.h"
 
 class TFTLCD : public Adafruit_GFX{
