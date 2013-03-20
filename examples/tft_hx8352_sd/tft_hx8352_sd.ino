@@ -46,6 +46,8 @@ void setup(void)
   bmp = SD.open(PIC_BMP0);
   drawPic(&bmp, 0, 0);
   bmp.close();
+  
+  Serial.println();
 }
 
 void loop(void)
@@ -53,24 +55,36 @@ void loop(void)
   if(Serial.available()){
     switch(Serial.read()){
       case '0':
-      bmp = SD.open(PIC_BMP0);
-      drawPic(&bmp, 0, 0);
-      bmp.close();
-      break;
+        Serial.print("Cmd: 0\t");
+        bmp = SD.open(PIC_BMP0);
+        drawPic(&bmp, 0, 0);
+        bmp.close();
+        Serial.print("\tFile: ");
+        Serial.println(PIC_BMP0);
+        break;
       case '1':
+        Serial.print("Cmd: 1\t");
         bmp = SD.open(PIC_BMP1);
         drawPic(&bmp, 0, 0);
         bmp.close();
+        Serial.print("\tFile: ");
+        Serial.println(PIC_BMP1);
         break;
       case '2':
+        Serial.print("Cmd: 2\t");
         bmp = SD.open(PIC_BMP2);
         drawPic(&bmp, 20, 20);
         bmp.close();
+        Serial.print("\tFile: ");
+        Serial.println(PIC_BMP2);
         break;
       case '3':
+        Serial.print("Cmd: 3\t");
         bmp = SD.open(PIC_BMP3);
         drawPic(&bmp, 0, 0);
         bmp.close();
+        Serial.print("\tFile: ");
+        Serial.println(PIC_BMP3);
         break;
     }
   }
@@ -91,6 +105,12 @@ void drawPic(File *bmp, uint16_t x, uint16_t y)
   uint16_t color[240];     
   uint8_t color_l, color_h, color_tmp_l, color_tmp_h;
   uint32_t i,j,k;
+    uint32_t width;
+  uint32_t height;
+  uint16_t bits;
+  uint32_t compression;
+  uint32_t alpha_mask = 0;
+  uint32_t pic_offset, dib_size;
   
   /** read header of the bmp file */
   i=0;
@@ -108,24 +128,19 @@ void drawPic(File *bmp, uint16_t x, uint16_t y)
     return;
   }
   
-  /** read DIB header */
-  uint32_t pic_offset, dib_size;
   pic_offset = (((uint32_t)header[0x0A+3])<<24) + (((uint32_t)header[0x0A+2])<<16) + (((uint32_t)header[0x0A+1])<<8)+(uint32_t)header[0x0A];
   while (bmp->available()) {
     header[i] = bmp->read();
     i++;
-    if(i==(pic_offset - 14)){
+    if(i==pic_offset){
       break;
     }
   }
-//  Serial.println(pic_offset, DEC);
+//  Serial.print("Offset: ");
+//  Serial.println(i, DEC);
+//  Serial.write(header, pic_offset);
   
   /** calculate picture width ,length and bit numbers of color */
-  uint32_t width;
-  uint32_t height;
-  uint16_t bits;
-  uint32_t compression;
-  uint32_t alpha_mask = 0;
   width = (((uint32_t)header[0x12+3])<<24) + (((uint32_t)header[0x12+2])<<16) + (((uint32_t)header[0x12+1])<<8)+(uint32_t)header[0x12];
   height = (((uint32_t)header[0x16+3])<<24) + (((uint32_t)header[0x16+2])<<16) + (((uint32_t)header[0x16+1])<<8)+(uint32_t)header[0x16];
   compression = (((uint32_t)header[0x1E + 3])<<24) + (((uint32_t)header[0x1E + 2])<<16) + (((uint32_t)header[0x1E + 1])<<8)+(uint32_t)header[0x1E];
@@ -137,17 +152,17 @@ void drawPic(File *bmp, uint16_t x, uint16_t y)
   /** print picture info */
   Serial.print("Width: ");
   Serial.print(width, DEC);
-  Serial.print(", Height: ");
+  Serial.print(",\tHeight: ");
   Serial.print(height, DEC);
-  Serial.print(", Color: ");
+  Serial.print(",\tColor: ");
   Serial.print(bits, DEC);
-  Serial.print("Bits, ");
+  Serial.print("Bits,\t");
   
   if(width>240 || height > 400){
     Serial.println("File size out of range.");
     return;
   }else if( (width+x)>240 || (height+y) > 400 ){
-    Serial.println("File size out of range because the start coordinate.");
+    Serial.println("File size out of range because of the start coordinate.");
   }
   
   switch(bits){
@@ -158,7 +173,7 @@ void drawPic(File *bmp, uint16_t x, uint16_t y)
       /** check picture format */
       if(pic_offset == 70 && alpha_mask == 0){
         /** 565 format */
-        Serial.println("Format: 565");
+        Serial.print("Format: 565");
         
         /** write from bottom left to top right, through bottom right */
         myTFT.setRotation(4);
@@ -185,7 +200,7 @@ void drawPic(File *bmp, uint16_t x, uint16_t y)
         }
       }else{
         /** 555 format */
-        Serial.println("Format: 555");
+        Serial.print("Format: 555");
         
         /** write from bottom left to top right, through bottom right */
         myTFT.setRotation(4);
