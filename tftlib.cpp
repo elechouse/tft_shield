@@ -131,8 +131,42 @@ void TFTLCD::writeData16(uint16_t dat)
 void TFTLCD::setRotation(uint8_t x)
 {
 	CS_ACTIVE;
-	rotation = x;
+    Adafruit_GFX::setRotation(x);
+#if 1
 	switch(x) {
+	case 0://All zero
+	default:
+		/**
+			START: top left. END bottom right.
+			DIR: top left --> top right
+		*/
+		writeRegister16(0x0016, 0x001C);
+		break;
+	case 1://MV = 0, MX = 1, MY = 0
+		/**
+			START: top right. END bottom left.
+			DIR: top right --> top left
+		*/
+		writeRegister16(0x0016, 0x005C);
+		break;
+	case 3://MV = 0, MX = 0, MY = 1
+		/**
+			START: bottom left. END top right.
+			DIR: bottom left --> bottom right
+		*/
+		writeRegister16(0x0016, 0x009C);
+		break;
+		break;
+	case 2://MV = 0, MX = 1, MY = 1
+		/**
+			START: bottom right.  END top left.
+			DIR: bottom right --> bottom left
+		*/
+		writeRegister16(0x0016, 0x00DC);
+		break;
+	}
+#else
+    switch(x) {
 	case 0://All zero
 	default:
 		/**
@@ -192,6 +226,7 @@ void TFTLCD::setRotation(uint8_t x)
 		writeRegister16(0x0016, 0x00FC);
 		break;
 	}
+#endif
 	CS_IDLE;
 }
 
@@ -199,6 +234,36 @@ void TFTLCD::setRotation(uint8_t x)
 void TFTLCD::setAddrWindow(int x1, int y1, int x2, int y2)
 {
 	int x_b, y_b, x_e, y_e;
+#if 1
+    switch(getRotation()) {
+	case 0:
+	default:
+		x_b = x1;
+		y_b = y1;
+		x_e = x2;
+		y_e = y2;
+		break;
+	case 1:
+        x_b = y1;
+		y_b = x1;
+		x_e = y2;
+		y_e = x2;
+		break;
+	case 3:
+        x_b = y1;
+		y_b = x1;
+		x_e = y2;
+		y_e = x2;
+		break;
+	case 2:
+        x_b = x1;
+		y_b = y1;
+		x_e = x2;
+		y_e = y2;
+		break;
+	}
+
+#else
 	switch(rotation) {
 	case 0:
 	default:
@@ -226,7 +291,7 @@ void TFTLCD::setAddrWindow(int x1, int y1, int x2, int y2)
 		y_e = TFTWIDTH -1 - x1;
 		break;
 	case 4:
-		x_b = x1;
+        x_b = x1;
 		y_b = TFTHEIGHT - 1 - y2;
 		x_e = x2;
 		y_e = TFTHEIGHT - 1 - y1;
@@ -250,6 +315,7 @@ void TFTLCD::setAddrWindow(int x1, int y1, int x2, int y2)
 		y_e = TFTWIDTH -1 - x1;
 		break;
 	}
+#endif
 	CS_ACTIVE;
 	writeRegister16(0x0002,x_b>>8);
 	writeRegister16(0x0003,x_b);
@@ -299,8 +365,8 @@ void TFTLCD::flood(uint16_t color, uint32_t len)
 
 void TFTLCD::fillScreen(uint16_t color)
 {
-	setAddrWindow(0, 0, TFTWIDTH - 1, TFTHEIGHT-1);
-	flood(color, (long)TFTWIDTH*(long)TFTHEIGHT);
+	setAddrWindow(0, 0, width() - 1, height() -  1);
+    flood(color, (long)width()*(long)height());
 }
 
 void TFTLCD::pushColors(uint16_t *data, uint8_t len, boolean first)

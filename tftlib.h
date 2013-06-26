@@ -31,7 +31,7 @@ public:
 	uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
 	void drawPic(uint8_t *data, uint32_t len);
 private:
-	uint8_t rotation;
+    
 };
 
 
