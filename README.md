@@ -1,6 +1,9 @@
 TFT LCD Library
 ================
 
+![pic][product]
+![pic][demo]
+
 #Note
 This driver depends on 3 other libraries:
 
@@ -19,19 +22,14 @@ This driver depends on 3 other libraries:
 	
 	Enjoy it!
 
-#Picture
-star0.bmp --> sample colors, 16bits, **565** Format
+## Buy ##
+[![elechouse][EHICON]][EHLINK]
 
-![preview star0.bmp](https://github.com/elechouse/tft_shield/blob/master/pic/star0.bmp?raw=true)
 
-star1.bmp --> Elehouse DUE, 16bits, **565** Format
+[EHLINK]: http://www.elechouse.com/elechouse/index.php?main_page=product_info&cPath=148_211&products_id=2217&zenid=klmfkjc4cpco9l93l3iee4tgn3
 
-![preview star1.bmp](https://github.com/elechouse/tft_shield/blob/master/pic/star1.bmp?raw=true)
+[EHICON]: https://raw.github.com/elechouse/CarDriverShield/master/image/elechouse.png
 
-star2.bmp --> ELECHOUSE logo, 16bits, **555** Format
+[Product]: http://www.elechouse.com/elechouse/images/product/3.2TFT%20shield/tft-shield-5.jpg
 
-![preview star2.bmp](https://github.com/elechouse/tft_shield/blob/master/pic/star2.bmp?raw=true)
-
-star3.bmp --> Diamond, 16bits, 16bits, **555** Format
-
-![preview star3.bmp](https://github.com/elechouse/tft_shield/blob/master/pic/star3.bmp?raw=true)
+[demo]: http://www.elechouse.com/elechouse/images/product/3.2TFT%20shield/tft-shield-18.jpg
