@@ -250,7 +250,7 @@ void TFTLCD::setAddrWindow(int x1, int y1, int x2, int y2)
 		y_e = x2;
 		break;
 	case 3:
-        x_b = y1;
+		x_b = y1;
 		y_b = x1;
 		x_e = y2;
 		y_e = x2;

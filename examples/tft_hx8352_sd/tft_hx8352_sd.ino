@@ -43,7 +43,7 @@ void setup(void)
   myTFT.fillScreen(0x001F);
   
   /** try to paint picture0 */
-  bmp = SD.open(PIC_BMP0);
+  bmp = SD.open(PIC_BMP2);
   drawPic(&bmp, 0, 0);
   bmp.close();
   
@@ -176,13 +176,13 @@ void drawPic(File *bmp, uint16_t x, uint16_t y)
         Serial.print("Format: 565");
         
         /** write from bottom left to top right, through bottom right */
-        myTFT.setRotation(4);
+        myTFT.setRotation(0);
         
         /** set work area */
-        myTFT.setAddrWindow(x, y, x+width-1, y+height-1);
+//        myTFT.setAddrWindow(x, y, x+width-1, y+height-1);
         
         /** read from SD card, write to TFT LCD */
-        for(j=0; j<height; j++){
+        for(j=height; j>0; j--){
           for(k=0;k<width; k++){
             color_l = bmp->read();
             color_h = bmp->read();
@@ -191,6 +191,7 @@ void drawPic(File *bmp, uint16_t x, uint16_t y)
             color[k] <<= 8;
             color[k] += color_l;
           }
+          myTFT.setAddrWindow(x+0, y+j-1, x+width-1, y+j-1);
           myTFT.pushColors(color, width, true);
           
           /** dummy read twice to align for 4 */
@@ -203,14 +204,14 @@ void drawPic(File *bmp, uint16_t x, uint16_t y)
         Serial.print("Format: 555");
         
         /** write from bottom left to top right, through bottom right */
-        myTFT.setRotation(4);
+        myTFT.setRotation(0);
         
         /** write from bottom left to top right, through bottom right */
-        myTFT.setAddrWindow(x, y, x+width-1, y+height-1);
+//        myTFT.setAddrWindow(x, y, x+width-1, y+height-1);
         
         /** read from SD card, write to TFT LCD */
-        for(j=0; j<height; j++){
-          for(k=0;k<width; k++){
+        for(j=height; j>0; j--){
+          for(k=0; k<width;k++){
             color_l = bmp->read();
             color_h = bmp->read();
             color_tmp_h = color_h<<1;
@@ -228,6 +229,7 @@ void drawPic(File *bmp, uint16_t x, uint16_t y)
             color[k] <<= 9;
             color[k] += color_l;
           }
+          myTFT.setAddrWindow(x+0, y+j-1, x+width-1, y+j-1);
           myTFT.pushColors(color, width, true);
           
           /** dummy read to align for 4 */
